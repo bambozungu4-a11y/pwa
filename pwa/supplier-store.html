@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Storefront — The Plug</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #ffffff;
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 28%), url("ss.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .page-content {
+            width: min(100%, 1140px);
+            margin: 32px auto;
+            padding: 32px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 32px;
+            box-shadow: 0 28px 80px rgba(0,0,0,0.24);
+            backdrop-filter: blur(18px);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: clamp(30px, 4vw, 42px);
+            line-height: 1.05;
+        }
+        .header p {
+            margin: 12px 0 0;
+            color: rgba(255,255,255,0.78);
+            max-width: 760px;
+            line-height: 1.6;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.14);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .button.primary {
+            background: #ffffff;
+            color: #111;
+            border-color: transparent;
+        }
+        .button.secondary {
+            background: rgba(255,255,255,0.12);
+            color: #ffffff;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .promo {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .store-card,
+        .checkout-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+            min-width: 0;
+        }
+        .store-card {
+            flex: 1.4;
+        }
+        .checkout-card {
+            flex: 0.9;
+            min-width: 320px;
+        }
+        .store-banner {
+            width: 100%;
+            min-height: 260px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.08);
+            border: 1px dashed rgba(255,255,255,0.18);
+            margin-bottom: 24px;
+        }
+        .store-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .store-title {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .logo-preview {
+            width: 86px;
+            height: 86px;
+            border-radius: 22px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .store-title h2 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .store-meta {
+            margin: 8px 0 0;
+            color: rgba(255,255,255,0.76);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .menu-list {
+            display: grid;
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .menu-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 14px;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 20px;
+            padding: 18px;
+        }
+        .menu-item-detail {
+            min-width: 0;
+        }
+        .menu-item h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+        .menu-item p {
+            margin: 0;
+            color: rgba(255,255,255,0.78);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+        .menu-meta {
+            display: grid;
+            gap: 12px;
+            justify-content: end;
+            text-align: right;
+        }
+        .menu-meta span {
+            color: rgba(255,255,255,0.84);
+            font-size: 14px;
+        }
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .quantity button {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .quantity span {
+            display: inline-flex;
+            min-width: 28px;
+            justify-content: center;
+            font-weight: 700;
+        }
+        .checkout-card h3 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .order-summary {
+            margin: 20px 0;
+            display: grid;
+            gap: 14px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.82);
+        }
+        .summary-row.total {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .checkout-btn {
+            width: 100%;
+            border: none;
+            border-radius: 18px;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 700;
+            background: #ffffff;
+            color: #111;
+            cursor: pointer;
+        }
+        .checkout-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+        .empty-state {
+            padding: 28px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.08);
+            border: 1px dashed rgba(255,255,255,0.18);
+            color: rgba(255,255,255,0.78);
+            text-align: center;
+        }
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 10, 16, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 1000;
+        }
+        .modal-backdrop.open {
+            display: flex;
+        }
+        .modal-dialog {
+            width: min(100%, 560px);
+            background: rgba(15, 18, 27, 0.96);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .modal-close {
+            border: none;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .modal-copy {
+            margin: 0 0 16px;
+            color: rgba(255,255,255,0.78);
+            line-height: 1.6;
+        }
+        .checkout-items-list {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .checkout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.07);
+        }
+        .checkout-item strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+        .checkout-form {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .checkout-form label {
+            display: grid;
+            gap: 6px;
+            color: rgba(255,255,255,0.82);
+            font-size: 14px;
+        }
+        .checkout-form input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .checkout-form input::placeholder {
+            color: rgba(255,255,255,0.45);
+        }
+        .checkout-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 980px) {
+            .promo { flex-direction: column; }
+            .store-card, .checkout-card { min-width: 100%; }
+            .menu-item { grid-template-columns: 1fr; }
+            .menu-meta { justify-content: flex-start; text-align: left; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <div class="header">
+            <div>
+                <h1 id="store-name">Supplier storefront</h1>
+                <p id="store-tagline">Browse the latest menu items and place your order directly with the supplier.</p>
+            </div>
+            <div class="button-group">
+                <a href="landing.html" class="button">Back to marketplace</a>
+            </div>
+        </div>
+
+        <div class="promo">
+            <div class="store-card">
+                <div class="store-banner" id="store-banner"><div class="empty-state">No banner available.</div></div>
+                <div class="store-title">
+                    <div class="logo-preview" id="logo-preview"><span>Logo</span></div>
+                    <div>
+                        <h2 id="store-headline">Your supplier name</h2>
+                        <div class="badge" id="store-category">Store category</div>
+                        <p class="store-meta" id="store-meta">Hours and description appear here.</p>
+                    </div>
+                </div>
+                <div id="store-description" class="store-meta">Supplier description will display here after setup.</div>
+            </div>
+
+            <aside class="checkout-card">
+                <h3>Order summary</h3>
+                <div id="order-summary-details" class="order-summary"></div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="order-total">$0.00</span>
+                </div>
+                <button id="checkout-button" class="checkout-btn" disabled>Place order</button>
+                <p class="store-meta" id="checkout-note">Select items to see your order total and then place your order.</p>
+            </aside>
+        </div>
+
+        <div class="store-card" id="menu-section">
+            <h3>Menu</h3>
+            <div id="menu-list" class="menu-list"></div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="checkout-modal" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+            <div class="modal-header">
+                <h3 id="checkout-title">Checkout</h3>
+                <button type="button" class="modal-close" id="close-checkout-modal" aria-label="Close checkout">×</button>
+            </div>
+            <p class="modal-copy">Review your cart before completing payment.</p>
+            <div id="checkout-items-list" class="checkout-items-list"></div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span id="checkout-total">$0.00</span>
+            </div>
+            <div class="checkout-form">
+                <label>
+                    Cardholder name
+                    <input id="cardholder-name" type="text" placeholder="Your full name">
+                </label>
+                <label>
+                    Card number
+                    <input id="card-number" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242">
+                </label>
+                <label>
+                    Expiry
+                    <input id="card-expiry" type="text" placeholder="MM/YY">
+                </label>
+                <label>
+                    CVV
+                    <input id="card-cvv" type="text" inputmode="numeric" placeholder="123">
+                </label>
+            </div>
+            <div class="checkout-actions">
+                <button type="button" class="button secondary" id="cancel-checkout">Cancel</button>
+                <button type="button" class="button primary" id="confirm-payment">Pay now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const storeNameEl = document.getElementById('store-name');
+        const storeTaglineEl = document.getElementById('store-tagline');
+        const storeCategoryEl = document.getElementById('store-category');
+        const storeMetaEl = document.getElementById('store-meta');
+        const storeHeadlineEl = document.getElementById('store-headline');
+        const storeDescriptionEl = document.getElementById('store-description');
+        const storeBannerEl = document.getElementById('store-banner');
+        const logoPreviewEl = document.getElementById('logo-preview');
+        const menuListEl = document.getElementById('menu-list');
+        const orderSummaryDetails = document.getElementById('order-summary-details');
+        const orderTotalEl = document.getElementById('order-total');
+        const checkoutButton = document.getElementById('checkout-button');
+        const checkoutNote = document.getElementById('checkout-note');
+        const checkoutModal = document.getElementById('checkout-modal');
+        const checkoutItemsList = document.getElementById('checkout-items-list');
+        const checkoutTotal = document.getElementById('checkout-total');
+        const cardholderName = document.getElementById('cardholder-name');
+        const cardNumber = document.getElementById('card-number');
+        const cardExpiry = document.getElementById('card-expiry');
+        const cardCvv = document.getElementById('card-cvv');
+        const cancelCheckoutButton = document.getElementById('cancel-checkout');
+        const confirmPaymentButton = document.getElementById('confirm-payment');
+        const closeCheckoutButton = document.getElementById('close-checkout-modal');
+
+        let supplierStore = null;
+        let selectedItems = [];
+
+        function currency(value) {
+            return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        function loadSupplierStore() {
+            const rawData = localStorage.getItem('supplierStoreData');
+            if (!rawData) {
+                menuListEl.innerHTML = '<div class="empty-state">Supplier storefront is not set up yet. Please ask the supplier to complete their setup.</div>';
+                return;
+            }
+
+            supplierStore = JSON.parse(rawData);
+            storeNameEl.textContent = supplierStore.storeName || 'Supplier storefront';
+            storeHeadlineEl.textContent = supplierStore.storeName || 'Supplier storefront';
+            storeTaglineEl.textContent = supplierStore.storeTagline || 'Browse the latest menu items and place your order directly with the supplier.';
+            storeCategoryEl.textContent = supplierStore.storeType || 'Unknown store type';
+            storeDescriptionEl.textContent = supplierStore.storeDescription || 'No description available yet.';
+            storeMetaEl.textContent = supplierStore.storeHours ? `Hours: ${supplierStore.storeHours}` : 'Operating hours not yet set.';
+
+            if (supplierStore.storeBanner) {
+                storeBannerEl.innerHTML = `<img src="${supplierStore.storeBanner}" alt="Store banner">`;
+            }
+            if (supplierStore.logoDataUrl) {
+                logoPreviewEl.innerHTML = `<img src="${supplierStore.logoDataUrl}" alt="Store logo">`;
+            }
+
+            renderMenuItems(supplierStore.menuItems || []);
+            updateOrderSummary();
+        }
+
+        function renderMenuItems(menuItems) {
+            if (!menuItems.length) {
+                menuListEl.innerHTML = '<div class="empty-state">No menu items available yet. Please check back later.</div>';
+                return;
+            }
+
+            selectedItems = menuItems.map(item => ({ ...item, quantity: 0 }));
+            menuListEl.innerHTML = '';
+            selectedItems.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'menu-item';
+                row.innerHTML = `
+                    <div class="menu-item-detail">
+                        <h3>${item.name || 'Untitled item'}</h3>
+                        <p>${item.description || 'No description available yet.'}</p>
+                        <div class="quantity">
+                            <button type="button" data-action="decrease" data-index="${index}">-</button>
+                            <span id="quantity-${index}">0</span>
+                            <button type="button" data-action="increase" data-index="${index}">+</button>
+                        </div>
+                    </div>
+                    <div class="menu-meta">
+                        <span>${item.price ? currency(Number(item.price)) : 'Free'}</span>
+                        <span>${item.price ? 'per unit' : ''}</span>
+                    </div>
+                `;
+                menuListEl.appendChild(row);
+            });
+
+            menuListEl.querySelectorAll('button[data-action]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const action = button.dataset.action;
+                    const index = Number(button.dataset.index);
+                    const item = selectedItems[index];
+                    if (!item) return;
+                    item.quantity = Math.max(0, item.quantity + (action === 'increase' ? 1 : -1));
+                    document.getElementById(`quantity-${index}`).textContent = item.quantity;
+                    updateOrderSummary();
+                });
+            });
+        }
+
+        function updateOrderSummary() {
+            const ordered = selectedItems.filter(item => item.quantity > 0);
+            orderSummaryDetails.innerHTML = '';
+            const total = ordered.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
+
+            if (!ordered.length) {
+                orderSummaryDetails.innerHTML = '<div class="empty-state">Add items to your cart to place an order.</div>';
+                checkoutButton.disabled = true;
+                orderTotalEl.textContent = '$0.00';
+                return;
+            }
+
+            ordered.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'summary-row';
+                row.innerHTML = `<span>${item.name} × ${item.quantity}</span><span>${currency((Number(item.price) || 0) * item.quantity)}</span>`;
+                orderSummaryDetails.appendChild(row);
+            });
+            orderTotalEl.textContent = currency(total);
+            checkoutButton.disabled = false;
+        }
+
+        function openCheckoutModal() {
+            const ordered = selectedItems.filter(item => item.quantity > 0);
+            if (!ordered.length) {
+                return;
+            }
+
+            checkoutItemsList.innerHTML = '';
+            ordered.forEach((item) => {
+                const entry = document.createElement('div');
+                entry.className = 'checkout-item';
+                entry.innerHTML = `
+                    <div>
+                        <strong>${item.name || 'Untitled item'}</strong>
+                        <span>${item.quantity} × ${currency(Number(item.price) || 0)}</span>
+                    </div>
+                    <span>${currency((Number(item.price) || 0) * item.quantity)}</span>
+                `;
+                checkoutItemsList.appendChild(entry);
+            });
+
+            checkoutTotal.textContent = currency(ordered.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0));
+            checkoutModal.classList.add('open');
+            checkoutModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeCheckoutModal() {
+            checkoutModal.classList.remove('open');
+            checkoutModal.setAttribute('aria-hidden', 'true');
+            cardholderName.value = '';
+            cardNumber.value = '';
+            cardExpiry.value = '';
+            cardCvv.value = '';
+        }
+
+        function saveOrder() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!currentUser) {
+                alert('Please sign in to place an order.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const ordered = selectedItems.filter(item => item.quantity > 0);
+            if (!ordered.length) {
+                return;
+            }
+
+            const order = {
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                customer: currentUser.email || 'Guest',
+                total: ordered.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0),
+                status: 'Pending',
+                items: ordered.map(item => `${item.name} x${item.quantity}`),
+                store: supplierStore.storeName || 'Supplier storefront',
+                userEmail: currentUser.email || 'guest',
+                method: 'delivery'
+            };
+
+            const supplierOrders = JSON.parse(localStorage.getItem('supplierOrders') || '[]');
+            supplierOrders.push(order);
+            localStorage.setItem('supplierOrders', JSON.stringify(supplierOrders));
+
+            const pastOrders = JSON.parse(localStorage.getItem('pastOrders') || '[]');
+            pastOrders.push(order);
+            localStorage.setItem('pastOrders', JSON.stringify(pastOrders));
+
+            alert('Your order has been placed. You can review it in Past Orders.');
+            selectedItems.forEach(item => item.quantity = 0);
+            menuListEl.querySelectorAll('[id^="quantity-"]').forEach(el => el.textContent = '0');
+            updateOrderSummary();
+            closeCheckoutModal();
+        }
+
+        checkoutButton.addEventListener('click', openCheckoutModal);
+        cancelCheckoutButton.addEventListener('click', closeCheckoutModal);
+        closeCheckoutButton.addEventListener('click', closeCheckoutModal);
+        confirmPaymentButton.addEventListener('click', () => {
+            if (!cardholderName.value.trim() || !cardNumber.value.trim() || !cardExpiry.value.trim() || !cardCvv.value.trim()) {
+                alert('Please complete your payment details before placing the order.');
+                return;
+            }
+            saveOrder();
+        });
+        checkoutModal.addEventListener('click', (event) => {
+            if (event.target === checkoutModal) {
+                closeCheckoutModal();
+            }
+        });
+        loadSupplierStore();
+    </script>
+</body>
+</html>

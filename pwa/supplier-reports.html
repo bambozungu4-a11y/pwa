@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Reports — The Plug</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #ffffff;
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 28%), url("ss.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .page-content {
+            width: min(100%, 1140px);
+            margin: 32px auto;
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 32px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(18px);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: clamp(32px, 4vw, 44px);
+            line-height: 1.05;
+        }
+        .header .tagline {
+            margin: 12px 0 0;
+            color: rgba(255,255,255,0.85);
+            font-size: 18px;
+            line-height: 1.5;
+            max-width: 760px;
+        }
+        .header p {
+            margin: 12px 0 0;
+            color: rgba(255,255,255,0.77);
+            max-width: 760px;
+            line-height: 1.75;
+        }
+        .header .action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.14);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.18s ease, background-color 0.18s ease;
+        }
+        .button.primary {
+            background: #ffffff;
+            color: #111;
+            border-color: transparent;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+        }
+        .section-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 26px;
+            padding: 26px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+            min-width: 0;
+            margin-bottom: 24px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .stat-card {
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+        .stat-card strong {
+            display: block;
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+        .stat-card span {
+            color: rgba(255,255,255,0.78);
+            font-size: 14px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+        }
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            font-size: 14px;
+            color: rgba(255,255,255,0.92);
+        }
+        th {
+            color: rgba(255,255,255,0.96);
+            font-weight: 700;
+        }
+        .chart-row {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .chart-bar {
+            border-radius: 14px;
+            background: rgba(255,255,255,0.12);
+            min-height: 90px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+        }
+        .chart-bar span {
+            position: absolute;
+            bottom: 10px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.85);
+        }
+        .chart-bar-inner {
+            width: 100%;
+            border-radius: 14px;
+            background: linear-gradient(180deg, #7f9cff 0%, #69e2ff 100%);
+        }
+        @media (max-width: 980px) {
+            .grid, .chart-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 760px) {
+            .header { align-items: flex-start; }
+            .button { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <div class="header">
+            <div>
+                <h1>Supplier Reports</h1>
+                <p class="tagline">A quick overview of your store health, traffic, and revenue.</p>
+                <p>Review key performance indicators and see what needs attention to grow your supplier business.</p>
+            </div>
+            <div class="action">
+                <a href="supplier-dashboard.html" class="button">Dashboard</a>
+                <a href="store-setup.html" class="button">Edit Setup</a>
+                <a href="landing.html" class="button primary">Browse Store</a>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>Summary</h2>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <strong id="report-orders">0</strong>
+                    <span>Total orders</span>
+                </div>
+                <div class="stat-card">
+                    <strong id="report-revenue">$0</strong>
+                    <span>Total revenue</span>
+                </div>
+                <div class="stat-card">
+                    <strong id="report-conversion">0%</strong>
+                    <span>Conversion rate</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="section-card">
+                <h2>Order breakdown</h2>
+                <div class="table-wrapper">
+                    <table id="report-order-table">
+                        <thead>
+                            <tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="section-card">
+                <h2>Customer actions</h2>
+                <ul id="report-notes" style="margin: 0; padding-left: 18px; color: rgba(255,255,255,0.8);"></ul>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>Weekly traffic</h2>
+            <div class="chart-row" id="report-traffic-chart"></div>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!currentUser || currentUser.type !== 'supplier') {
+            alert('This area is only available to supplier accounts.');
+            window.location.href = 'landing.html';
+            throw new Error('Access denied');
+        }
+
+        function formatCurrency(value) {
+            return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        function loadReportData() {
+            const rawData = localStorage.getItem('supplierStoreData');
+            const rawOrders = localStorage.getItem('supplierOrders');
+            const orders = rawOrders ? JSON.parse(rawOrders) : [];
+
+            document.getElementById('report-orders').textContent = orders.length;
+            document.getElementById('report-revenue').textContent = formatCurrency(orders.reduce((sum, order) => sum + order.total, 0));
+            const completed = orders.filter(order => order.status === 'Completed').length;
+            const reportConversion = orders.length ? Math.max(5, Math.min(30, Math.round((completed / orders.length) * 100))) : 0;
+            document.getElementById('report-conversion').textContent = `${reportConversion}%`;
+
+            const orderTable = document.querySelector('#report-order-table tbody');
+            orderTable.innerHTML = '';
+            if (!orders.length) {
+                orderTable.innerHTML = '<tr><td colspan="4">No order data available yet.</td></tr>';
+            } else {
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>#${order.id}</td>
+                        <td>${order.date}</td>
+                        <td>${order.status}</td>
+                        <td>${formatCurrency(order.total)}</td>
+                    `;
+                    orderTable.appendChild(row);
+                });
+            }
+
+            const notes = [];
+            if (!rawData) {
+                notes.push('Complete your store setup to begin tracking performance.');
+            } else {
+                const storeData = JSON.parse(rawData);
+                if (!storeData.storeBanner) notes.push('A banner is missing. Add one to increase customer trust.');
+                if (!storeData.logoDataUrl) notes.push('Upload a logo to strengthen your brand presence.');
+                if (!storeData.menuItems || !storeData.menuItems.length) notes.push('Publish at least one menu item to start getting orders.');
+                if (!orders.length) notes.push('No orders have arrived yet. Share your store link to drive first sales.');
+                if (orders.length && completed < orders.length) notes.push('There are pending orders waiting to be shipped. Fulfill them to improve ratings.');
+            }
+            const reportNotes = document.getElementById('report-notes');
+            reportNotes.innerHTML = notes.map(note => `<li>${note}</li>`).join('');
+
+            const chart = document.getElementById('report-traffic-chart');
+            chart.innerHTML = '';
+            const counts = Array.from({ length: 7 }, (_, index) => orders.filter(order => {
+                const orderAge = Math.floor((Date.now() - new Date(order.date).getTime()) / 86400000);
+                return orderAge === index;
+            }).length).reverse();
+            const maxCount = Math.max(1, ...counts);
+            ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach((label, index) => {
+                const count = counts[index];
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.innerHTML = `<div class="chart-bar-inner" style="height: ${Math.max(12, Math.round((count / maxCount) * 100))}%;"></div><span>${label}</span>`;
+                chart.appendChild(bar);
+            });
+        }
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'supplierStoreData' || event.key === 'supplierOrders') {
+                loadReportData();
+            }
+        });
+
+        window.addEventListener('focus', loadReportData);
+        loadReportData();
+    </script>
+</body>
+</html>

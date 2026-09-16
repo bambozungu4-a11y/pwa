@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Dashboard — The Plug</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #ffffff;
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 28%), url("ss.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .page-content {
+            width: min(100%, 1140px);
+            margin: 32px auto;
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 32px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(18px);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: clamp(32px, 4vw, 44px);
+            line-height: 1.05;
+        }
+
+        .header .tagline {
+            margin: 12px 0 0;
+            color: rgba(255,255,255,0.85);
+            font-size: 18px;
+            line-height: 1.5;
+            max-width: 760px;
+        }
+
+        .header p {
+            margin: 12px 0 0;
+            color: rgba(255,255,255,0.77);
+            max-width: 760px;
+            line-height: 1.75;
+        }
+
+        .header .action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.14);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.18s ease, background-color 0.18s ease;
+        }
+
+        .button.primary {
+            background: #ffffff;
+            color: #111;
+            border-color: transparent;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 24px;
+        }
+
+        .section-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 26px;
+            padding: 26px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+            min-width: 0;
+        }
+
+        .store-banner {
+            width: 100%;
+            min-height: 220px;
+            border-radius: 26px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed rgba(255,255,255,0.18);
+            margin-bottom: 24px;
+        }
+
+        .store-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .store-banner .placeholder {
+            color: rgba(255,255,255,0.7);
+            font-size: 15px;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .section-card h2 {
+            margin: 0 0 18px;
+            font-size: 20px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+
+        .stat-card strong {
+            display: block;
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .stat-card span {
+            color: rgba(255,255,255,0.78);
+            font-size: 14px;
+        }
+
+        .metric-bar {
+            height: 12px;
+            width: 100%;
+            background: rgba(255,255,255,0.12);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 999px;
+            transition: width 0.35s ease;
+        }
+
+        .metric-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.82);
+            font-size: 14px;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .metric-status-high .metric-value {
+            color: #5adb6c;
+        }
+
+        .metric-status-medium .metric-value {
+            color: #f0b54d;
+        }
+
+        .metric-status-low .metric-value {
+            color: #ff6b6b;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.high {
+            background: rgba(93,219,108,0.16);
+            color: #5adb6c;
+        }
+
+        .badge.medium {
+            background: rgba(240,181,77,0.16);
+            color: #f0b54d;
+        }
+
+        .badge.low {
+            background: rgba(255,107,107,0.16);
+            color: #ff6b6b;
+        }
+
+        .task-list,
+        .notification-list,
+        .overview-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-list li,
+        .notification-list li,
+        .overview-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .task-list li:last-child,
+        .notification-list li:last-child,
+        .overview-list li:last-child {
+            border-bottom: none;
+        }
+
+        .task-success {
+            color: #7f9cff;
+        }
+
+        .task-failed {
+            color: #ff6b6b;
+        }
+
+        .dashboard-chart {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .chart-bar {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-bar-inner {
+            width: 100%;
+            min-height: 90px;
+            background: rgba(255,255,255,0.14);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .chart-bar-fill {
+            width: 100%;
+            background: linear-gradient(180deg, #7f9cff 0%, #69e2ff 100%);
+            transition: height 0.3s ease;
+        }
+
+        .chart-bar-label {
+            color: rgba(255,255,255,0.75);
+            font-size: 11px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .store-list,
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+        }
+
+        .store-list th,
+        .store-list td,
+        .order-table th,
+        .order-table td {
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .store-list th,
+        .order-table th {
+            color: rgba(255,255,255,0.9);
+            font-weight: 700;
+        }
+
+        .store-list tbody tr:last-child td,
+        .order-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-card {
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.16);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .status-card strong {
+            font-size: 18px;
+            display: block;
+        }
+
+        .status-card p {
+            margin: 0;
+            color: rgba(255,255,255,0.8);
+            max-width: 480px;
+            line-height: 1.6;
+        }
+
+        .status-card .status-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .small-button {
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #ffffff;
+            background: rgba(255,255,255,0.14);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .small-button.primary {
+            background: #ffffff;
+            color: #111;
+            border-color: transparent;
+        }
+
+        .order-button {
+            border: none;
+            background: rgba(255,255,255,0.12);
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .order-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .order-button.complete {
+            background: #5adb6c;
+            color: #111;
+        }
+
+        @media (max-width: 980px) {
+            .dashboard-grid,
+            .panel-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .header {
+                align-items: flex-start;
+            }
+
+            .button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .status-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .status-card p {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <div class="header">
+            <div>
+                <h1>Supplier Dashboard</h1>
+                <p id="dashboard-store-tagline" class="tagline">Store tagline not set yet.</p>
+                <p>Welcome to your supplier dashboard. Manage your store, update your menu items, and track orders from one place.</p>
+            </div>
+            <div class="action">
+                <a href="supplier-dashboard.html" class="button">Dashboard</a>
+                <a href="store-setup.html" class="button">Edit Setup</a>
+                <a href="supplier-reports.html" class="button">Reports</a>
+                <a href="landing.html" class="button primary">Browse Store</a>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <div>
+                <strong id="dashboard-status-label">Sales readiness: Low</strong>
+                <p id="dashboard-status-copy">Complete more store details to improve visibility, attract more clicks, and boost your sales readiness.</p>
+            </div>
+            <div class="status-actions">
+                <span class="badge low" id="dashboard-status-badge">Low</span>
+                <a href="store-setup.html" class="small-button primary">Finish setup</a>
+            </div>
+        </div>
+
+        <div class="store-banner" id="dashboard-store-banner">
+            <div class="placeholder">No store banner added yet. Add a banner URL in store setup.</div>
+        </div>
+
+        <div class="dashboard-grid">
+            <section class="section-card">
+                <h2>Store overview</h2>
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <strong id="active-store-count">1</strong>
+                        <span>Active store</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong id="menu-item-count">0</strong>
+                        <span>Menu items</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong id="pending-order-count">0</strong>
+                        <span>Pending orders</span>
+                    </div>
+                </div>
+
+                <div class="panel-row">
+                    <div class="section-card">
+                        <h2>Visibility metrics</h2>
+                        <ul class="overview-list">
+                            <li><span>Profile completion</span><strong id="metric-profile-completion">0%</strong></li>
+                            <li><span>Visibility score</span><strong id="metric-visibility-score">0/100</strong></li>
+                            <li><span>Website views</span><strong id="metric-page-views">0</strong></li>
+                            <li><span>Customer clicks</span><strong id="metric-clicks">0</strong></li>
+                        </ul>
+                    </div>
+                    <div class="section-card">
+                        <h2>Sales analytics</h2>
+                        <div class="stat-grid">
+                            <div class="stat-card">
+                                <strong id="metric-weekly-orders">0</strong>
+                                <span>Weekly orders</span>
+                            </div>
+                            <div class="stat-card">
+                                <strong id="metric-revenue">$0</strong>
+                                <span>Estimated revenue</span>
+                            </div>
+                            <div class="stat-card">
+                                <strong id="metric-conversion">0%</strong>
+                                <span>Conversion rate</span>
+                            </div>
+                        </div>
+                        <div class="dashboard-chart" id="weekly-sales-chart"></div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h2>Task checklist</h2>
+                    <ul class="task-list" id="task-list"></ul>
+                </div>
+            </section>
+
+            <aside class="section-card">
+                <h2>Action center</h2>
+                <div class="panel-item">
+                    <h3>Recent activity</h3>
+                    <ul id="activity-list" class="notification-list">
+                        <li>Store setup is ready and waiting for your first order.</li>
+                    </ul>
+                </div>
+                <div class="panel-item">
+                    <h3>Notifications</h3>
+                    <ul id="notification-list" class="notification-list"></ul>
+                </div>
+                <div class="panel-item">
+                    <h3>Store summary</h3>
+                    <ul class="overview-list">
+                        <li><span>Store name</span><strong id="dashboard-store-name">Example Supplier</strong></li>
+                        <li><span>Category</span><strong id="dashboard-store-category">Dispensary</strong></li>
+                        <li><span>Hours</span><strong id="dashboard-store-hours">Mon–Fri 9AM–9PM</strong></li>
+                        <li><span>Description</span><strong id="dashboard-store-description">Your store description goes here.</strong></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+        <div class="dashboard-grid">
+            <section class="section-card">
+                <h2>Menu items</h2>
+                <table class="store-list" id="menu-items-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <p id="menu-empty-text" class="placeholder" style="margin-top: 18px;">No menu items have been added yet. Add menu items in store setup to start selling.</p>
+            </section>
+
+            <aside class="section-card">
+                <h2>Order management</h2>
+                <p class="placeholder">Track pending orders and mark them as fulfilled to improve your fulfillment score.</p>
+                <table class="order-table" id="order-table">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <p id="orders-empty-text" class="placeholder" style="margin-top: 18px;">No orders yet. Your store will start receiving orders after you publish menu items.</p>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!currentUser || currentUser.type !== 'supplier') {
+            alert('This area is only available to supplier accounts.');
+            window.location.href = 'landing.html';
+            throw new Error('Access denied');
+        }
+
+        const menuItemsTableBody = document.querySelector('#menu-items-table tbody');
+        const orderTableBody = document.querySelector('#order-table tbody');
+        const menuEmptyText = document.getElementById('menu-empty-text');
+        const ordersEmptyText = document.getElementById('orders-empty-text');
+        const notificationList = document.getElementById('notification-list');
+        const activityList = document.getElementById('activity-list');
+        const taskList = document.getElementById('task-list');
+        const statusBadge = document.getElementById('dashboard-status-badge');
+        const statusLabel = document.getElementById('dashboard-status-label');
+        const statusCopy = document.getElementById('dashboard-status-copy');
+        const bannerContainer = document.getElementById('dashboard-store-banner');
+
+        function formatCurrency(value) {
+            return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        function getSavedOrders(menuItems) {
+            let orders = [];
+            const saved = localStorage.getItem('supplierOrders');
+            if (saved) {
+                orders = JSON.parse(saved);
+            }
+
+            if (!orders || !orders.length) {
+                orders = menuItems.slice(0, 3).map((item, index) => ({
+                    id: 100 + index,
+                    date: new Date(Date.now() - index * 86400000).toISOString().split('T')[0],
+                    customer: `Customer ${index + 1}`,
+                    total: Number(((index + 1) * 12.5).toFixed(2)),
+                    status: index === 0 ? 'Pending' : 'Completed',
+                    items: [item.name || `Menu item ${index + 1}`]
+                }));
+                localStorage.setItem('supplierOrders', JSON.stringify(orders));
+            }
+
+            return orders;
+        }
+
+        function updateOrders(orders) {
+            localStorage.setItem('supplierOrders', JSON.stringify(orders));
+        }
+
+        function renderTasks(tasks) {
+            taskList.innerHTML = '';
+            tasks.forEach((task) => {
+                const item = document.createElement('li');
+                item.innerHTML = `
+                    <span>${task.label}</span>
+                    <strong class="${task.done ? 'task-success' : 'task-failed'}">${task.done ? 'Done' : 'Pending'}</strong>
+                `;
+                taskList.appendChild(item);
+            });
+        }
+
+        function renderNotifications(notes) {
+            notificationList.innerHTML = '';
+            if (!notes.length) {
+                const item = document.createElement('li');
+                item.textContent = 'All systems normal. Your store is in good shape.';
+                notificationList.appendChild(item);
+                return;
+            }
+            notes.forEach((note) => {
+                const item = document.createElement('li');
+                item.textContent = note;
+                notificationList.appendChild(item);
+            });
+        }
+
+        function renderChart(orders) {
+            const chartContainer = document.getElementById('weekly-sales-chart');
+            chartContainer.innerHTML = '';
+            const orderCounts = Array.from({ length: 7 }, (_, index) => orders.filter((order) => {
+                const orderAge = Math.floor((Date.now() - new Date(order.date).getTime()) / 86400000);
+                return orderAge === index;
+            }).length).reverse();
+
+            const maxCount = Math.max(1, ...orderCounts);
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            orderCounts.forEach((count, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.innerHTML = `
+                    <div class="chart-bar-inner">
+                        <div class="chart-bar-fill" style="height: ${Math.round((count / maxCount) * 100)}%;"></div>
+                    </div>
+                    <div class="chart-bar-label">${days[index]}</div>
+                `;
+                chartContainer.appendChild(bar);
+            });
+        }
+
+        function renderMenuItems(items) {
+            menuItemsTableBody.innerHTML = '';
+            if (!items.length) {
+                menuEmptyText.style.display = 'block';
+                return;
+            }
+            menuEmptyText.style.display = 'none';
+            items.forEach((item) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name || '-'}</td>
+                    <td>${item.price ? `$${item.price}` : '-'}</td>
+                    <td>${item.description || '-'}</td>
+                `;
+                menuItemsTableBody.appendChild(row);
+            });
+        }
+
+        function renderOrders(orders) {
+            orderTableBody.innerHTML = '';
+            const pendingOrders = orders.filter((order) => order.status === 'Pending');
+            const hasOrders = orders.length > 0;
+            ordersEmptyText.style.display = hasOrders ? 'none' : 'block';
+            document.getElementById('pending-order-count').textContent = pendingOrders.length;
+
+            orders.forEach((order) => {
+                const row = document.createElement('tr');
+                const actionCell = document.createElement('td');
+                const actionButton = document.createElement('button');
+                actionButton.type = 'button';
+                actionButton.className = `order-button ${order.status === 'Pending' ? 'complete' : ''}`;
+                actionButton.textContent = order.status === 'Pending' ? 'Mark shipped' : 'Fulfilled';
+                actionButton.disabled = order.status !== 'Pending';
+                actionButton.addEventListener('click', () => {
+                    order.status = 'Completed';
+                    updateOrders(orders);
+                    loadDashboardData();
+                });
+                actionCell.appendChild(actionButton);
+
+                row.innerHTML = `
+                    <td>#${order.id} · ${order.customer}</td>
+                    <td>${order.status}</td>
+                    <td>${formatCurrency(order.total)}</td>
+                `;
+                row.appendChild(actionCell);
+                orderTableBody.appendChild(row);
+            });
+        }
+
+        function renderTaskSummary(completion, visibilityScore, readinessLabel) {
+            statusLabel.textContent = `Sales readiness: ${readinessLabel}`;
+            statusBadge.textContent = readinessLabel;
+            statusBadge.className = `badge ${readinessLabel.toLowerCase()}`;
+            if (readinessLabel === 'High') {
+                statusCopy.textContent = 'Your store is well-positioned for online growth and order volume. Keep publishing new items and responding quickly.';
+            } else if (readinessLabel === 'Medium') {
+                statusCopy.textContent = 'Your store is on the right track. Add a few more items and polish your profile to improve visibility.';
+            } else {
+                statusCopy.textContent = 'Add key store details and menu items to boost your reach and start generating orders.';
+            }
+
+            document.getElementById('metric-profile-completion-fill').style.width = `${completion}%`;
+            document.getElementById('metric-visibility-score-fill').style.width = `${visibilityScore}%`;
+            document.getElementById('metric-sales-readiness-fill').style.width = readinessLabel === 'High' ? '100%' : readinessLabel === 'Medium' ? '65%' : '35%';
+            document.getElementById('metric-sales-readiness-fill').style.background = readinessLabel === 'High' ? '#5adb6c' : readinessLabel === 'Medium' ? '#f0b54d' : '#ff6b6b';
+            document.getElementById('metric-profile-completion-fill').style.background = '#7f9cff';
+            document.getElementById('metric-visibility-score-fill').style.background = '#69e2ff';
+        }
+
+        function loadDashboardData() {
+            const rawData = localStorage.getItem('supplierStoreData');
+            if (!rawData) {
+                renderNotifications(['No supplier setup found yet. Complete the store setup to unlock dashboard reports.']);
+                document.getElementById('dashboard-store-name').textContent = 'Your store';
+                return;
+            }
+
+            const storeData = JSON.parse(rawData);
+            const menuItems = Array.isArray(storeData.menuItems) ? storeData.menuItems : [];
+            const orders = getSavedOrders(menuItems);
+            const viewScore = Math.max(20, 20 + menuItems.length * 12 + (storeData.storeBanner ? 30 : 0) + (storeData.logoDataUrl ? 20 : 0));
+            const clicks = Math.round(viewScore * 0.18);
+            const completedOrders = orders.filter((o) => o.status === 'Completed').length;
+            const conversionRate = Math.max(5, Math.min(30, orders.length ? Math.round((completedOrders / orders.length) * 100) : 0));
+            const revenue = orders.reduce((sum, order) => sum + order.total, 0);
+
+            const profileFields = [
+                storeData.storeName,
+                storeData.storeTagline,
+                storeData.storeDescription,
+                storeData.storeType,
+                storeData.storeHours,
+                storeData.storeBanner,
+                menuItems.length ? 'filled' : ''
+            ];
+            const filledCount = profileFields.filter((field) => field && field.toString().trim().length).length;
+            const completion = Math.round((filledCount / profileFields.length) * 100);
+            const visibilityScore = Math.min(100, Math.round(40 + menuItems.length * 10 + (storeData.storeBanner ? 15 : 0) + (storeData.logoDataUrl ? 20 : 0)));
+            const readinessLabel = visibilityScore >= 75 && completion >= 75 ? 'High' : visibilityScore >= 55 && completion >= 55 ? 'Medium' : 'Low';
+
+            document.getElementById('dashboard-store-name').textContent = storeData.storeName || 'Your store';
+            document.getElementById('dashboard-store-tagline').textContent = storeData.storeTagline || 'Store tagline not set yet.';
+            document.getElementById('dashboard-store-category').textContent = storeData.storeType || 'Unspecified';
+            document.getElementById('dashboard-store-hours').textContent = storeData.storeHours || 'Not set yet';
+            document.getElementById('dashboard-store-description').textContent = storeData.storeDescription || 'No description set yet.';
+            document.getElementById('metric-profile-completion').textContent = `${completion}%`;
+            document.getElementById('metric-visibility-score').textContent = `${visibilityScore}/100`;
+            document.getElementById('metric-page-views').textContent = viewScore;
+            document.getElementById('metric-clicks').textContent = clicks;
+            document.getElementById('metric-weekly-orders').textContent = orders.length;
+            document.getElementById('metric-revenue').textContent = formatCurrency(revenue);
+            document.getElementById('metric-conversion').textContent = `${conversionRate}%`;
+            document.getElementById('active-store-count').textContent = 1;
+            document.getElementById('menu-item-count').textContent = menuItems.length;
+
+            const tasks = [
+                { label: 'Store logo uploaded', done: Boolean(storeData.logoDataUrl) },
+                { label: 'Banner image added', done: Boolean(storeData.storeBanner) },
+                { label: 'Profile details completed', done: Boolean(storeData.storeName && storeData.storeDescription && storeData.storeType && storeData.storeHours) },
+                { label: 'Menu published', done: menuItems.length > 0 },
+                { label: 'Ready for customers', done: readinessLabel !== 'Low' }
+            ];
+
+            const notifications = [];
+            if (!storeData.storeBanner) {
+                notifications.push('Add a banner to improve your storefront appeal.');
+            }
+            if (!storeData.logoDataUrl) {
+                notifications.push('Upload a logo so customers recognize your brand.');
+            }
+            if (!menuItems.length) {
+                notifications.push('Add your first menu item to start receiving orders.');
+            }
+            if (orders.filter((order) => order.status === 'Pending').length) {
+                notifications.push('You have pending orders waiting to be fulfilled.');
+            }
+            if (!notifications.length) {
+                notifications.push('Your store is healthy and ready for more customers.');
+            }
+
+            renderTasks(tasks);
+            renderNotifications(notifications);
+            renderMenuItems(menuItems);
+            renderOrders(orders);
+            renderChart(orders);
+            renderTaskSummary(completion, visibilityScore, readinessLabel);
+
+            if (storeData.storeBanner) {
+                bannerContainer.innerHTML = `<img src="${storeData.storeBanner}" alt="Store Banner">`;
+            } else {
+                bannerContainer.innerHTML = `<div class="placeholder">No store banner added yet. Add a banner URL in store setup.</div>`;
+            }
+        }
+
+        function createActivityItem(text) {
+            const li = document.createElement('li');
+            li.textContent = text;
+            return li;
+        }
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'supplierStoreData' || event.key === 'supplierOrders') {
+                loadDashboardData();
+            }
+        });
+
+        window.addEventListener('focus', loadDashboardData);
+        loadDashboardData();
+    </script>
+</body>
+</html>

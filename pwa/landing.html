@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stores — The Plug</title>
+        <style>
+        
+         body {
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 28%), url("ss.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .page-content {
+            width: 100%;
+            max-width: 920px;
+            padding: 56px 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 36px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(18px);
+            position: relative;
+        }
+        
+        h2 {
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: 0.24em;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        h1 {
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 14px;
+            line-height: 1.02;
+        }
+        h1 {
+                margin: 0 auto 14px;
+                display: inline-block;
+            }
+
+        p { max-width: 720px; margin: 0 auto 34px; color: rgba(255, 255, 255, 0.72); font-size: 16px; line-height: 1.75; letter-spacing: 0.01em; }
+
+        /* Search & cards */
+        .search-bar { margin-top: 18px; display:flex; justify-content:center }
+        .search-bar input { width: 60%; max-width:560px; padding:14px 16px; border-radius:14px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:#fff; outline:none }
+        .search-bar input:focus { box-shadow:0 8px 24px rgba(0,0,0,0.22); background:rgba(255,255,255,0.08) }
+
+        .filters { margin-top:26px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px }
+        .filter-chip { border-radius:999px; padding:10px 16px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:#fff; cursor:pointer; font-size:13px; transition:transform 0.2s ease, background 0.2s ease }
+        .filter-chip.active, .filter-chip:hover { background:rgba(255,255,255,0.16); transform:translateY(-1px) }
+        .menu { position:absolute; top:24px; left:24px; }
+        .menu-button { border:none; border-radius:18px; padding:10px 16px; background:rgba(255,255,255,0.12); color:#fff; cursor:pointer; font-size:14px; min-width:120px; text-align:left }
+        .menu-button:hover { background:rgba(255,255,255,0.18); }
+        .menu-dropdown { display:none; position:absolute; top:48px; left:0; min-width:170px; background:rgba(15,17,21,0.96); border:1px solid rgba(255,255,255,0.12); border-radius:18px; box-shadow:0 16px 40px rgba(0,0,0,0.28); overflow:hidden; z-index:10 }
+        .profile-icon { position:absolute; top:24px; right:24px; width:56px; height:56px; border-radius:50%; overflow:hidden; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); display:flex; align-items:center; justify-content:center; box-shadow:0 16px 36px rgba(0,0,0,0.22); color:rgba(255,255,255,0.78); font-size:24px; cursor:pointer; text-decoration:none; }
+        .profile-icon:hover { transform:scale(1.03); transition:transform 0.2s ease; }
+        .profile-icon img { width:100%; height:100%; object-fit:cover; display:block; }
+        .profile-icon.has-image { background:transparent; }
+        .profile-icon.has-image::before { display:none; }
+        .profile-icon::before { content:'👤'; }
+        .menu-dropdown.open { display:block; }
+        .menu-dropdown a { display:block; padding:12px 16px; color:#fff; text-decoration:none; font-size:14px; border-bottom:1px solid rgba(255,255,255,0.08); }
+        .menu-dropdown a:last-child { border-bottom:none; }
+        .menu-dropdown a:hover { background:rgba(255,255,255,0.08); }
+        .sort-group { display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.72); font-size:14px }
+        .sort-group select { padding:10px 14px; border-radius:14px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.06); color:#fff; outline:none }
+
+        .stores { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin-top:22px }
+        .card { background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); border-radius:18px; padding:18px; box-shadow:0 10px 28px rgba(0,0,0,0.28); color:#fff; text-align:left }
+        .store-splash { width:100%; min-height:140px; border-radius:16px; background-size:cover; background-position:center; margin-bottom:14px; position:relative; overflow:hidden; }
+        .store-splash::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.35)); }
+        .card h3 { margin:0 0 6px 0; font-size:20px }
+        .card .desc { margin:0; font-size:14px; color:rgba(255,255,255,0.8); line-height:1.6 }
+        .card .actions { margin-top:16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+        .card .chip { padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.08); font-size:12px; color:rgba(255,255,255,0.9); letter-spacing:0.02em }
+
+        .btn { background:#ffffff; color:#111; padding:10px 14px; border-radius:10px; text-decoration:none; display:inline-block; font-weight:700 }
+        .ghost { background:transparent; border:1px solid #fff; color:#fff }
+        .meta { font-size:13px; color:rgba(255,255,255,0.7) }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <header>
+            <div class="menu" id="menu">
+                <button id="menu-toggle" class="menu-button">Menu ▾</button>
+                <div id="menu-dropdown" class="menu-dropdown">
+                    <a id="menu-account-link" href="account-setup.html" style="display:none;">Account</a>
+                    <a id="menu-past-orders-link" href="past-orders.html" style="display:none;">Past orders</a>
+                    <a id="menu-promotion-link" href="#" style="display:none;">Promotion</a>
+                    <a id="menu-help-link" href="#" style="display:none;">Help</a>
+                    <a id="menu-signin-link" href="index.html" style="display:none;">Sign in</a>
+                    <a id="menu-signout-link" href="index.html" style="display:none;">Sign out</a>
+                </div>
+            </div>
+            <a href="account-setup.html" class="profile-icon" id="profile-icon" aria-label="Open account settings" title="Open account settings"><img id="profile-img" alt="Profile"></a>
+            <div style="text-align:center; width:100%;">
+                <h1>Dispensary Hub</h1>
+                <div class="meta">Browse all the stores on The Plug</div>
+            </div>
+            <div class="filters">
+                <div id="category-filters"></div>
+                <div class="sort-group">
+                    <label for="sort">Sort by</label>
+                    <select id="sort">
+                        <option value="location">Location</option>
+                        <option value="open">Open now</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="search-bar">
+                <input id="search" type="search" placeholder="Search dispensaries or keywords...">
+            </div>
+            <div id="featured-store-section"></div>
+            <div class="stores" id="stores"></div>
+        </main>
+    </div>
+
+    <script>
+        const categories = [
+            { id:'all', label:'All' },
+            { id:'cbd', label:'CBD' },
+            { id:'indoor', label:'Indoor' },
+            { id:'greenhouse', label:'Greenhouse' },
+            { id:'outdoor', label:'Outdoor' },
+            { id:'edibles', label:'Edibles' }
+        ];
+
+        const stores = [
+            { id:1, name:'Green Garden', desc:'Premium CBD flower and oils for daily relief.', category:'cbd', status:'Open now', location:'Downtown', accent:'linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%)' },
+            { id:2, name:'Indoor Oasis', desc:'Indoor-grown strains with consistent quality.', category:'indoor', status:'Open now', location:'Uptown', accent:'linear-gradient(135deg, #78ffd6 0%, #a8ff97 100%)' },
+            { id:3, name:'Greenhouse Collective', desc:'Greenhouse-grown products with natural flavor.', category:'greenhouse', status:'Closing soon', location:'Harbor', accent:'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)' },
+            { id:4, name:'Outdoor Harvest', desc:'Outdoor-grown buds with bright, earthy notes.', category:'outdoor', status:'Open now', location:'Suburbs', accent:'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+            { id:5, name:'Edible Emporium', desc:'Delicious edibles made for reliable dosing.', category:'edibles', status:'Open now', location:'Market District', accent:'linear-gradient(135deg, #f6d365 0%, #fda085 100%)' }
+        ];
+
+        const storesEl = document.getElementById('stores');
+        const categoryFilters = document.getElementById('category-filters');
+        const sortSelect = document.getElementById('sort');
+        const searchInput = document.getElementById('search');
+        let activeCategory = 'all';
+
+        function renderCategories(){
+            categoryFilters.innerHTML = categories.map(c => `
+                <button class="filter-chip${c.id === activeCategory ? ' active' : ''}" data-category="${c.id}">${c.label}</button>
+            `).join('');
+            categoryFilters.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    activeCategory = btn.dataset.category;
+                    renderCategories();
+                    renderStores(searchInput.value);
+                });
+            });
+        }
+
+        function sortStores(list){
+            const sortKey = sortSelect.value;
+            if(sortKey === 'location'){
+                return [...list].sort((a,b) => a.location.localeCompare(b.location));
+            }
+            if(sortKey === 'open'){
+                return [...list].sort((a,b) => (a.status === 'Open now' ? -1 : 1) - (b.status === 'Open now' ? -1 : 1));
+            }
+            return list;
+        }
+
+        const supplierStoreData = JSON.parse(localStorage.getItem('supplierStoreData') || 'null');
+        const featuredStoreSection = document.getElementById('featured-store-section');
+
+        function renderFeaturedStore() {
+            if (!supplierStoreData) {
+                featuredStoreSection.innerHTML = `
+                    <div class="card" style="grid-column:1/-1;">
+                        <h3>Featured supplier storefront</h3>
+                        <p class="desc">A supplier storefront will appear here once the supplier has completed store setup.</p>
+                        <div class="actions">
+                            <a class="btn ghost" href="supplier-signup.html">Create a supplier store</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const bannerStyle = supplierStoreData.storeBanner ? `background-image: url('${supplierStoreData.storeBanner}'); background-size: cover; background-position: center;` : supplierStoreData.storeType ? supplierStoreData.storeType : supplierStoreData.storeName;
+            featuredStoreSection.innerHTML = `
+                <div class="card" style="grid-column:1/-1;">
+                    <div class="store-splash" style="${bannerStyle}"></div>
+                    <h3>${supplierStoreData.storeName || 'Supplier Store'}</h3>
+                    <p class="desc">${supplierStoreData.storeTagline || supplierStoreData.storeDescription || 'Browse the supplier storefront and place your order.'}</p>
+                    <div class="actions">
+                        <a class="btn" href="supplier-store.html">Visit supplier storefront</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStores(query = ''){
+            const q = query.trim().toLowerCase();
+            const filtered = stores.filter(s => {
+                const matchesCategory = activeCategory === 'all' || s.category === activeCategory;
+                const matchesQuery = !q || `${s.name} ${s.desc} ${s.category}`.toLowerCase().includes(q);
+                return matchesCategory && matchesQuery;
+            });
+            const list = sortStores(filtered);
+            storesEl.innerHTML = '';
+            if(list.length === 0){
+                storesEl.innerHTML = '<div class="meta" style="grid-column:1/-1; text-align:center; padding:20px;">No stores found.</div>';
+                return;
+            }
+            for(const s of list){
+                const d = document.createElement('div'); d.className='card';
+                d.innerHTML = `
+                    <div class="store-splash" style="background:${s.accent};"></div>
+                    <h3>${s.name}</h3>
+                    <p class="desc">${s.desc}</p>
+                    <p class="desc"><strong>Location:</strong> ${s.location}</p>
+                    <div class="actions">
+                        <a class="btn ghost" href="#">Visit store</a>
+                        <div class="chip">${s.status}</div>
+                    </div>
+                `;
+                storesEl.appendChild(d);
+            }
+        }
+
+        function attachEvents(){
+            sortSelect.addEventListener('change', () => renderStores(searchInput.value));
+            searchInput.addEventListener('input', (e) => renderStores(e.target.value));
+            const menu = document.getElementById('menu');
+            const menuToggle = document.getElementById('menu-toggle');
+            const menuDropdown = document.getElementById('menu-dropdown');
+            menuToggle.addEventListener('click', (event) => {
+                event.stopPropagation();
+                menuDropdown.classList.toggle('open');
+            });
+            document.addEventListener('click', (event) => {
+                if (!menu.contains(event.target)) {
+                    menuDropdown.classList.remove('open');
+                }
+            });
+        }
+
+        renderFeaturedStore();
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const profileImageData = currentUser ? localStorage.getItem('profilePictureData') || (JSON.parse(localStorage.getItem('accountSetupData') || 'null')?.profilePicture || '') : '';
+        const profileImg = document.getElementById('profile-img');
+        const profileIcon = document.getElementById('profile-icon');
+        const accountLink = document.getElementById('menu-account-link');
+        const pastOrdersLink = document.getElementById('menu-past-orders-link');
+        const promotionLink = document.getElementById('menu-promotion-link');
+        const helpLink = document.getElementById('menu-help-link');
+        const signinLink = document.getElementById('menu-signin-link');
+        const signoutLink = document.getElementById('menu-signout-link');
+
+        if (currentUser) {
+            accountLink.style.display = 'block';
+            pastOrdersLink.style.display = 'block';
+            promotionLink.style.display = 'block';
+            helpLink.style.display = 'block';
+            signoutLink.style.display = 'block';
+            signoutLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+            if (profileImageData) {
+                profileImg.src = profileImageData;
+                profileIcon.classList.add('has-image');
+            }
+        } else {
+            signinLink.style.display = 'block';
+            profileIcon.classList.remove('has-image');
+        }
+
+        renderCategories();
+        attachEvents();
+        renderStores();
+    </script>
+</body>
+</html>

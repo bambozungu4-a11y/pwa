@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Registration - Dispensary Hub</title>
+        <style>
+        
+         body {
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 28%), url("ss.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .page-content {
+            width: 100%;
+            max-width: 920px;
+            padding: 56px 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 36px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(18px);
+        }
+        
+        h2 {
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: 0.24em;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        h1 {
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 14px;
+            line-height: 1.02;
+        }
+        h1 {
+                margin: 0 auto 14px;
+                display: inline-block;
+            }
+
+        p {
+            max-width: 720px;
+            margin: 0 auto 34px;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 16px;
+            line-height: 1.75;
+            letter-spacing: 0.01em;
+        }
+
+        .supplier-panel {
+            max-width: 520px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 34px 30px;
+            border-radius: 26px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            box-shadow: 0 22px 46px rgba(0, 0, 0, 0.18);
+        }
+
+        .supplier-panel label {
+            display: block;
+            text-align: left;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .supplier-panel input,
+        .supplier-panel select {
+            width: 90%;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 20px;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .supplier-panel input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .supplier-panel select {
+            cursor: pointer;
+        }
+
+        .supplier-panel select option {
+            background-color: #0f1115;
+            color: #ffffff;
+        }
+
+        .supplier-panel input:focus,
+        .supplier-panel select:focus {
+            border-color: rgba(255, 255, 255, 0.78);
+            background-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+        }
+
+        .submit-button {
+            width: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            color: #111111;
+            border: none;
+            border-radius: 18px;
+            padding: 16px 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            text-decoration: none;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
+        }
+
+        .back-note {
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .back-note a {
+            color: #f7f7f7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-note a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <h1> THE PLUG </h1>
+        <h2>Business Registration</h2>
+        <p style="text-align: center; color: #ffffff;"><i>Complete your business registration to start selling on The Plug platform.</i></p>
+        <div class="supplier-panel">
+            <form action="#" method="GET" id="supplier-form">
+                <label for="business-name">Business Name</label>
+                <input id="business-name" name="businessName" type="text" placeholder="Enter your business name" required>
+
+                <label for="business-type">Business Type</label>
+                <select id="business-type" name="businessType" required>
+                    <option value="">Select a business type</option>
+                    <option value="dispensary">Dispensary</option>
+                    <option value="wholesale">Wholesale</option>
+                    <option value="production">Production / Manufacturing</option>
+                    <option value="testing">Testing Facility</option>
+                    <option value="delivery">Delivery Service</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="license-number">Business License Number</label>
+                <input id="license-number" name="licenseNumber" type="text" placeholder="Enter your business license number" required>
+
+                <label for="business-address">Business Address</label>
+                <input id="business-address" name="businessAddress" type="text" placeholder="Enter your business address" required>
+
+                <label for="business-city">City</label>
+                <input id="business-city" name="businessCity" type="text" placeholder="Enter your city" required>
+
+                <label for="business-state">State</label>
+                <input id="business-state" name="businessState" type="text" placeholder="Enter your state" required>
+
+                <label for="business-zip">Zip Code</label>
+                <input id="business-zip" name="businessZip" type="text" placeholder="Enter your zip code" required>
+
+                <label for="business-phone">Business Phone Number</label>
+                <input id="business-phone" name="businessPhone" type="tel" placeholder="Enter your business phone number" required>
+
+                <button class="submit-button" type="submit">Complete Registration</button>
+            </form>
+            <p class="back-note"><a href="signup.html">Back to Account Setup</a></p>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!currentUser || currentUser.type !== 'supplier') {
+            alert('This area is only available to supplier accounts.');
+            window.location.href = 'landing.html';
+            throw new Error('Access denied');
+        }
+
+        const form = document.getElementById('supplier-form');
+        
+        form.addEventListener('submit', function(e) {
+            const licenseNumber = document.getElementById('license-number').value.trim();
+            
+            if (!licenseNumber) {
+                e.preventDefault();
+                alert('Please provide a valid business license number.');
+                return;
+            }
+
+            e.preventDefault();
+            window.location.href = 'store-setup.html';
+        });
+    </script>
+</body>
+</html>

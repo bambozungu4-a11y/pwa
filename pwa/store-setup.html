@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Setup - Dispensary Hub</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 28%), url("ss.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .page-content {
+            width: min(100%, 1040px);
+            margin: 32px auto;
+            padding: 34px 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 32px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(18px);
+        }
+
+        h1 {
+            font-size: 44px;
+            margin: 0 0 10px;
+            letter-spacing: -0.04em;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: rgba(255,255,255,0.75);
+            text-align: center;
+            margin: 0 0 24px;
+        }
+
+        p.lead {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            max-width: 780px;
+            margin: 0 auto 34px;
+            line-height: 1.8;
+        }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 28px;
+        }
+
+        .card {
+            min-width: 0;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 22px 46px rgba(0, 0, 0, 0.16);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 20px;
+            letter-spacing: 0.02em;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+            letter-spacing: 0.02em;
+        }
+
+        input[type="text"], input[type="url"], input[type="file"], textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background-color: rgba(255,255,255,0.12);
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            margin-bottom: 18px;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        textarea {
+            min-height: 108px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: rgba(255,255,255,0.78);
+            background-color: rgba(255,255,255,0.18);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.08);
+        }
+
+        .logo-preview {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 20px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px dashed rgba(255,255,255,0.24);
+        }
+
+        .logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .menu-items {
+            margin-top: 12px;
+        }
+
+        .menu-item {
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 16px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .menu-item header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .menu-item header strong {
+            font-size: 15px;
+        }
+
+        .menu-item button.remove-item {
+            border: none;
+            background: #ff5c5c;
+            color: #fff;
+            border-radius: 12px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .button-row button,
+        .button-row a {
+            min-width: 220px;
+            max-width: 100%;
+            border: none;
+            border-radius: 18px;
+            padding: 16px 22px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .primary-button {
+            background: #ffffff;
+            color: #111111;
+        }
+
+        .secondary-button {
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.28);
+        }
+
+        .primary-button:hover,
+        .secondary-button:hover,
+        .remove-item:hover {
+            opacity: 0.95;
+        }
+
+        .note {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            .page-content {
+                padding: 24px 20px;
+            }
+
+            .setup-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-row {
+                justify-content: stretch;
+            }
+
+            .button-row button,
+            .button-row a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <h1>Store Setup</h1>
+        <h2>Supplier Dashboard</h2>
+        <p class="lead">Complete your store profile with your logo, menu offerings, and shop details so customers can discover your business on The Plug.</p>
+
+        <form id="store-setup-form" action="#" method="POST">
+            <div class="setup-grid">
+                <section class="card">
+                    <h3>Store Profile</h3>
+                    <label for="store-name">Store Name</label>
+                    <input id="store-name" name="storeName" type="text" placeholder="Enter your store name" required>
+
+                    <label for="store-tagline">Tagline</label>
+                    <input id="store-tagline" name="storeTagline" type="text" placeholder="Short catchy description">
+
+                    <label for="store-description">Store Description</label>
+                    <textarea id="store-description" name="storeDescription" placeholder="Tell customers what makes your store unique" required></textarea>
+
+                    <label for="store-type">Store Category</label>
+                    <select id="store-type" name="storeType" required>
+                        <option value="">Select category</option>
+                        <option value="dispensary">Dispensary</option>
+                        <option value="wholesale">Wholesale</option>
+                        <option value="production">Production</option>
+                        <option value="delivery">Delivery</option>
+                        <option value="testing">Testing</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <label for="store-hours">Operating Hours</label>
+                    <input id="store-hours" name="storeHours" type="text" placeholder="e.g. Mon–Fri 9AM–9PM">
+                </section>
+
+                <section class="card">
+                    <h3>Branding</h3>
+                    <div class="logo-preview" id="logo-preview">
+                        <span>Logo preview</span>
+                    </div>
+                    <label for="store-logo">Upload Store Logo</label>
+                    <input id="store-logo" name="storeLogo" type="file" accept="image/*">
+                    <p class="note">Supported formats: PNG, JPG, SVG. This logo will appear on your storefront.</p>
+
+                    <label for="store-banner">Store Banner Image URL</label>
+                    <input id="store-banner" name="storeBanner" type="url" placeholder="Optional banner image URL">
+                    <p class="note">Add a banner image to make your page look polished. Paste a direct image URL here.</p>
+                </section>
+
+                <section class="card full-width">
+                    <h3>Menu Items</h3>
+                    <div id="menu-items" class="menu-items"></div>
+                    <button type="button" class="secondary-button" id="add-menu-item">Add Menu Item</button>
+                    <p class="note">Add product or service entries to populate your menu. You can edit these later in the dashboard.</p>
+                </section>
+            </div>
+
+            <div class="button-row">
+                <a href="supplier-signup.html" class="secondary-button">Back to Registration</a>
+                <button type="submit" class="primary-button">Save Store Setup</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!currentUser || currentUser.type !== 'supplier') {
+            alert('This area is only available to supplier accounts.');
+            window.location.href = 'landing.html';
+            throw new Error('Access denied');
+        }
+
+        const logoInput = document.getElementById('store-logo');
+        const logoPreview = document.getElementById('logo-preview');
+        const menuItemsContainer = document.getElementById('menu-items');
+        const addMenuItemButton = document.getElementById('add-menu-item');
+        const form = document.getElementById('store-setup-form');
+
+        logoInput.addEventListener('change', () => {
+            const file = logoInput.files[0];
+            if (!file) {
+                logoPreview.innerHTML = '<span>Logo preview</span>';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                logoPreview.innerHTML = `<img src="${event.target.result}" alt="Store Logo">`;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function loadSavedStoreData() {
+            const rawData = localStorage.getItem('supplierStoreData');
+            if (!rawData) {
+                return;
+            }
+
+            const storeData = JSON.parse(rawData);
+            document.getElementById('store-name').value = storeData.storeName || '';
+            document.getElementById('store-tagline').value = storeData.storeTagline || '';
+            document.getElementById('store-description').value = storeData.storeDescription || '';
+            document.getElementById('store-type').value = storeData.storeType || '';
+            document.getElementById('store-hours').value = storeData.storeHours || '';
+            document.getElementById('store-banner').value = storeData.storeBanner || '';
+
+            if (storeData.menuItems && Array.isArray(storeData.menuItems) && storeData.menuItems.length) {
+                menuItemsContainer.innerHTML = '';
+                storeData.menuItems.forEach((item, index) => {
+                    const menuItem = createMenuItem(index);
+                    menuItem.querySelector('input[name="menuName[]"]').value = item.name || '';
+                    menuItem.querySelector('input[name="menuPrice[]"]').value = item.price || '';
+                    menuItem.querySelector('textarea[name="menuDescription[]"]').value = item.description || '';
+                    menuItemsContainer.appendChild(menuItem);
+                });
+            }
+
+            if (storeData.logoDataUrl) {
+                logoPreview.innerHTML = `<img src="${storeData.logoDataUrl}" alt="Store Logo">`;
+            }
+        }
+
+        function createMenuItem(index) {
+            const item = document.createElement('div');
+            item.className = 'menu-item';
+            item.innerHTML = `
+                <header>
+                    <strong>Menu item ${index + 1}</strong>
+                    <button type="button" class="remove-item">Remove</button>
+                </header>
+                <label>Name</label>
+                <input type="text" name="menuName[]" placeholder="Item name" required>
+                <label>Price</label>
+                <input type="text" name="menuPrice[]" placeholder="Item price" required>
+                <label>Description</label>
+                <textarea name="menuDescription[]" placeholder="Item description"></textarea>
+            `;
+
+            item.querySelector('.remove-item').addEventListener('click', () => {
+                item.remove();
+                updateMenuItemHeaders();
+            });
+            return item;
+        }
+
+        function updateMenuItemHeaders() {
+            const items = menuItemsContainer.querySelectorAll('.menu-item');
+            items.forEach((menuItem, index) => {
+                const header = menuItem.querySelector('header strong');
+                if (header) {
+                    header.textContent = `Menu item ${index + 1}`;
+                }
+            });
+        }
+
+        addMenuItemButton.addEventListener('click', () => {
+            const count = menuItemsContainer.querySelectorAll('.menu-item').length;
+            menuItemsContainer.appendChild(createMenuItem(count));
+        });
+
+        // Start with one default menu item
+        menuItemsContainer.appendChild(createMenuItem(0));
+        loadSavedStoreData();
+
+        function collectMenuItems() {
+            const items = [];
+            menuItemsContainer.querySelectorAll('.menu-item').forEach((menuItem) => {
+                const name = menuItem.querySelector('input[name="menuName[]"]').value.trim();
+                const price = menuItem.querySelector('input[name="menuPrice[]"]').value.trim();
+                const description = menuItem.querySelector('textarea[name="menuDescription[]"]').value.trim();
+
+                if (name || price || description) {
+                    items.push({ name, price, description });
+                }
+            });
+            return items;
+        }
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const storeData = {
+                storeName: document.getElementById('store-name').value.trim(),
+                storeTagline: document.getElementById('store-tagline').value.trim(),
+                storeDescription: document.getElementById('store-description').value.trim(),
+                storeType: document.getElementById('store-type').value,
+                storeHours: document.getElementById('store-hours').value.trim(),
+                storeBanner: document.getElementById('store-banner').value.trim(),
+                logoDataUrl: logoPreview.querySelector('img') ? logoPreview.querySelector('img').src : '',
+                menuItems: collectMenuItems(),
+                createdAt: new Date().toISOString()
+            };
+
+            if (!storeData.storeName) {
+                alert('Please enter your store name before saving.');
+                return;
+            }
+
+            localStorage.setItem('supplierStoreData', JSON.stringify(storeData));
+            alert('Store setup saved. You can now continue to your supplier dashboard.');
+            window.location.href = 'supplier-dashboard.html';
+        });
+    </script>
+</body>
+</html>

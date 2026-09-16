@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - THE PLUG</title>
+    <link rel="stylesheet" href="css/shared.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .cart-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .cart-items {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .cart-item-info h4 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .cart-item-info p {
+            margin: 0;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .qty-input {
+            width: 60px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .cart-summary {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 12px;
+            margin-top: 12px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-cart p {
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .cart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+            }
+
+            .cart-item {
+                grid-template-columns: 60px 1fr;
+                gap: 12px;
+            }
+
+            .cart-item-actions {
+                grid-column: 1 / -1;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-logo">THE PLUG</div>
+            <ul class="nav-links">
+                <li><a href="landing.html">Home</a></li>
+                <li><a href="store-setup.html">Store</a></li>
+                <li><a href="past-orders.html">My Orders</a></li>
+            </ul>
+            <div class="nav-user-menu">
+                <a href="#" id="cart-icon" class="flex-center gap-10">
+                    🛒 <span id="cart-count" class="cart-badge">0</span>
+                </a>
+                <button id="logout-btn" class="btn btn-secondary btn-small">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="cart-wrapper">
+            <h1>Shopping Cart</h1>
+            <div id="error-container"></div>
+
+            <div id="cart-content">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 THE PLUG. All rights reserved.</p>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script>
+        // Check if user is authenticated
+        if (!isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+
+        const cartContent = document.getElementById('cart-content');
+        const errorContainer = document.getElementById('error-container');
+
+        /**
+         * Render shopping cart
+         */
+        function renderCart() {
+            const cart = getCart();
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <h2>Your cart is empty</h2>
+                        <p>Start shopping to add items to your cart</p>
+                        <a href="store-setup.html" class="btn btn-primary">Continue Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let itemsHTML = '<div class="cart-grid"><div class="cart-items">';
+            
+            cart.forEach(item => {
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-image">📦</div>
+                        <div class="cart-item-info">
+                            <h4>${item.name}</h4>
+                            <p>${formatCurrency(item.price)} each</p>
+                        </div>
+                        <div class="cart-item-actions">
+                            <input type="number" min="1" value="${item.quantity}" class="qty-input" data-item-id="${item.id}">
+                            <span>${formatCurrency(item.price * item.quantity)}</span>
+                            <button class="btn btn-ghost btn-small remove-btn" data-item-id="${item.id}">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            itemsHTML += '</div>';
+            
+            const total = getCartTotal();
+            itemsHTML += `
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>${formatCurrency(total)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (10%):</span>
+                        <span>${formatCurrency(total * 0.1)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping:</span>
+                        <span>FREE</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span>${formatCurrency(total * 1.1)}</span>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="checkout-btn">
+                        Proceed to Checkout
+                    </button>
+                    <a href="store-setup.html" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Continue Shopping</a>
+                </div>
+            </div>
+            `;
+
+            cartContent.innerHTML = itemsHTML;
+
+            // Attach event listeners
+            document.querySelectorAll('.qty-input').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const qty = parseInt(e.target.value);
+                    updateCartQuantity(e.target.dataset.itemId, qty);
+                    updateCartBadge();
+                    renderCart();
+                });
+            });
+
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    removeFromCart(btn.dataset.itemId);
+                    updateCartBadge();
+                    renderCart();
+                });
+            });
+
+            document.getElementById('checkout-btn').addEventListener('click', () => {
+                // Redirect to checkout (to be implemented)
+                window.location.href = 'checkout.html';
+            });
+        }
+
+        // Initial render
+        updateCartBadge();
+        renderCart();
+
+        // Listen for cart updates
+        document.addEventListener('cartUpdated', renderCart);
+
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', logout);
+    </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - THE PLUG Dispensary Hub</title>
+    <link rel="stylesheet" href="css/shared.css">
+    <style>
+        .login-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .login-panel {
+            width: 100%;
+        }
+
+        .login-panel input {
+            width: 100%;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .login-button {
+            width: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 480px) {
+            .login-button {
+                width: 48%;
+                font-size: 14px;
+                padding: 14px 12px;
+            }
+
+            .form-actions {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="page-content">
+            <div class="page-content">
+                <h1>THE PLUG</h1>
+                <h2>Your Trusted Dispensary Hub</h2>
+                <p style="text-align: center;"><i>Welcome to The Plug, your one-stop destination for all your dispensary needs. Explore our wide range of products and services designed to enhance your experience.</i></p>
+                
+                <div id="error-container"></div>
+                <div class="login-panel">
+                    <form id="step1-form">
+                        <div class="form-group">
+                            <label for="login-input">Email or Phone Number</label>
+                            <input id="login-input" name="login" type="text" placeholder="Enter your email or phone number" required>
+                        </div>
+                        <button class="btn btn-primary" type="submit" style="width: 100%;">Continue</button>
+                    </form>
+
+                    <form id="step2-form" style="display:none;">
+                        <p style="color:#fff; margin-bottom:20px;">Signing in as <strong id="show-login-identifier"></strong></p>
+                        <div class="form-group">
+                            <label for="password-input">Password</label>
+                            <input id="password-input" type="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary login-button" id="password-submit" type="submit">Sign In</button>
+                            <button class="btn btn-ghost login-button" id="back-button" type="button">Back</button>
+                        </div>
+                        <p style="margin-top:14px; text-align:center;">
+                            <a href="#" id="forgot-password-link" style="color:#c2e0ff; text-decoration:underline;">Forgot password?</a>
+                        </p>
+                    </form>
+
+                    <form id="reset-form" style="display:none;">
+                        <p style="color:#fff; margin-bottom:20px;">Reset password for <strong id="reset-login-identifier"></strong></p>
+                        <div class="form-group">
+                            <label for="new-password-input">New Password</label>
+                            <input id="new-password-input" type="password" placeholder="Enter your new password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password-input">Confirm Password</label>
+                            <input id="confirm-password-input" type="password" placeholder="Confirm your new password" required>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary login-button" id="reset-submit" type="submit">Reset</button>
+                            <button class="btn btn-ghost login-button" id="reset-back-button" type="button">Back</button>
+                        </div>
+                    </form>
+
+                    <p class="signup-note" style="margin-top: 20px;">No account yet? <a href="signup.html">Sign up</a> to get started.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/login.js"></script>
+    <script>
+        // Prevent back button after sign out
+        (function() {
+            window.history.pushState(null, '', window.location.href);
+            window.addEventListener('popstate', function() {
+                window.history.pushState(null, '', window.location.href);
+            });
+        })();
+    </script>
+</body>
+</html>

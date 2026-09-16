@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Setup - The Plug</title>
+    <style>
+        body {
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 28%), url("ss.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .page-content {
+            width: 100%;
+            max-width: 960px;
+            padding: 56px 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 36px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(18px);
+        }
+
+        h1 { font-size: 42px; margin-bottom: 10px; }
+        p.lead { color: rgba(255,255,255,0.78); margin-top: 0; margin-bottom: 30px; }
+
+        .setup-panel {
+            display: grid;
+            gap: 28px;
+            max-width: 860px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .summary {
+            background: rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .summary h2 { margin-top: 0; font-size: 24px; }
+        .summary p { margin: 10px 0; color: rgba(255,255,255,0.82); }
+
+        .setup-form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .setup-form label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.78);
+            font-size: 14px;
+        }
+
+        .setup-form input,
+        .setup-form select,
+        .setup-form textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .setup-form textarea { min-height: 120px; resize: vertical; }
+
+        .form-row {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            align-items: start;
+        }
+
+        .form-row > div {
+            min-width: 0;
+        }
+
+        .form-row.full-width { grid-template-columns: 1fr; }
+
+        @media (max-width: 720px) {
+            .form-row,
+            .form-row.full-width {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.82);
+            margin: 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            accent-color: #ffffff;
+            width: 16px;
+            height: 16px;
+        }
+
+        .profile-preview {
+            color: rgba(255,255,255,0.78);
+            font-size: 14px;
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        .crop-section {
+            display: none;
+            margin: 8px 0 16px;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .crop-stage {
+            width: min(100%, 280px);
+            aspect-ratio: 1;
+            margin: 0 auto 12px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .crop-stage img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform-origin: center center;
+            transition: transform 0.2s ease;
+        }
+
+        .crop-stage::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid rgba(255,255,255,0.8);
+            border-radius: 20px;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 9999px rgba(0,0,0,0.18);
+        }
+
+        .crop-toolbar {
+            display: grid;
+            gap: 10px;
+        }
+
+        .crop-toolbar label {
+            display: grid;
+            gap: 6px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.82);
+            margin: 0;
+        }
+
+        .crop-toolbar input[type="range"] {
+            width: 100%;
+            accent-color: #ffffff;
+        }
+
+        .crop-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 20px; border-radius: 18px; background: #ffffff; color: #111; border: none; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; }
+        .btn.secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.22); }
+
+        .note { color: rgba(255,255,255,0.72); font-size: 14px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <h1>Account Setup</h1>
+        <p class="lead">Add more details so The Plug can personalize your profile and recommendations.</p>
+        <div class="setup-panel">
+            <div class="summary" id="signup-summary"></div>
+            <form id="account-setup-form" class="setup-form">
+                <div class="form-row full-width">
+                    <div>
+                        <label for="nickname">Preferred name</label>
+                        <input id="nickname" name="nickname" placeholder="Nickname or preferred name">
+                    </div>
+                    <div>
+                        <label for="birthday">Birthday</label>
+                        <input id="birthday" name="birthday" type="date">
+                    </div>
+                </div>
+
+                <div class="form-row full-width">
+                    <label for="profile-picture">Profile picture</label>
+                    <input id="profile-picture" name="profilePicture" type="file" accept="image/*">
+                    <p class="note">Upload a profile picture (max 2MB). You can crop it into a square before saving.</p>
+                    <p id="profile-error" class="note" style="color:#ff9999; display:none;"></p>
+                </div>
+
+                <div id="crop-section" class="crop-section">
+                    <div class="crop-stage">
+                        <img id="crop-image" alt="Crop preview">
+                    </div>
+                    <div class="crop-toolbar">
+                        <label for="crop-zoom">Zoom
+                            <input id="crop-zoom" type="range" min="1" max="3" step="0.1" value="1">
+                        </label>
+                        <div class="crop-actions">
+                            <button type="button" id="apply-crop" class="btn">Crop to square</button>
+                            <button type="button" id="cancel-crop" class="btn secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profile-preview" class="profile-preview note"></div>
+
+                <div class="form-row full-width">
+                    <div>
+                        <label for="address">Street address</label>
+                        <input id="address" name="address" placeholder="123 Main Street">
+                    </div>
+                    <div>
+                        <label for="city">City</label>
+                        <input id="city" name="city" placeholder="City name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="state">State / Region</label>
+                        <input id="state" name="state" placeholder="State or region">
+                    </div>
+                    <div>
+                        <label for="postcode">Postcode</label>
+                        <input id="postcode" name="postcode" placeholder="Postal code">
+                    </div>
+                </div>
+
+                <div class="form-row full-width">
+                    <div>
+                        <label for="country">Country</label>
+                        <input id="country" name="country" placeholder="Country">
+                    </div>
+                </div>
+
+                <div class="form-row full-width payment-section">
+                    <h3 style="margin:0 0 12px; color: rgba(255,255,255,0.88); font-size: 18px;">Card information</h3>
+                    <label for="cardholder-name">Cardholder name</label>
+                    <input id="cardholder-name" name="cardholderName" placeholder="Name on card">
+                    <label for="card-number">Card number</label>
+                    <input id="card-number" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                    <div class="form-row">
+                        <div>
+                            <label for="card-expiry">Expiry date</label>
+                            <input id="card-expiry" name="cardExpiry" placeholder="MM/YY">
+                        </div>
+                        <div>
+                            <label for="card-cvv">CVV</label>
+                            <input id="card-cvv" name="cardCvv" placeholder="123" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row full-width optin-options">
+                    <label>Account options</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="opt-in-offers" name="optInOffers"> Receive exclusive offers and updates</label>
+                        <label><input type="checkbox" id="opt-in-alerts" name="optInAlerts"> Get order and delivery alerts</label>
+                        <label><input type="checkbox" id="opt-in-recommendations" name="optInRecommendations"> Personalized product recommendations</label>
+                    </div>
+                </div>
+
+                <div class="form-row full-width">
+                    <label for="product-preference">Product preference</label>
+                    <select id="product-preference" name="productPreference">
+                        <option value="">Select your favorite category</option>
+                        <option value="cbd">CBD</option>
+                        <option value="indica">Indica</option>
+                        <option value="sativa">Sativa</option>
+                        <option value="hybrid">Hybrid</option>
+                        <option value="edibles">Edibles</option>
+                    </select>
+                </div>
+
+                <div class="form-row full-width">
+                    <label for="delivery-notes">Delivery preferences</label>
+                    <textarea id="delivery-notes" name="deliveryNotes" placeholder="Any special delivery instructions or preferences?"></textarea>
+                </div>
+
+                <div class="form-row full-width">
+                    <label for="profile-notes">A little about you</label>
+                    <textarea id="profile-notes" name="profileNotes" placeholder="Tell us about your lifestyle, favorite strains, or what matters most to you."></textarea>
+                </div>
+
+                <button class="btn" type="submit">Save and continue</button>
+                <p class="note">You can update this information later in your account settings.</p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const signupData = JSON.parse(localStorage.getItem('signupData') || 'null');
+        const accountSetupData = JSON.parse(localStorage.getItem('accountSetupData') || 'null');
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const summary = document.getElementById('signup-summary');
+        const form = document.getElementById('account-setup-form');
+
+        const profileInput = document.getElementById('profile-picture');
+        const profilePreview = document.getElementById('profile-preview');
+        const cropSection = document.getElementById('crop-section');
+        const cropImage = document.getElementById('crop-image');
+        const cropZoom = document.getElementById('crop-zoom');
+        const applyCropButton = document.getElementById('apply-crop');
+        const cancelCropButton = document.getElementById('cancel-crop');
+        let currentCropSource = '';
+
+        function populateAccountForm(data) {
+            if (!data) return;
+            document.getElementById('nickname').value = data.nickname || '';
+            document.getElementById('birthday').value = data.birthday || '';
+            document.getElementById('address').value = data.address || '';
+            document.getElementById('city').value = data.city || '';
+            document.getElementById('state').value = data.state || '';
+            document.getElementById('postcode').value = data.postcode || '';
+            document.getElementById('country').value = data.country || '';
+            document.getElementById('cardholder-name').value = data.cardholderName || '';
+            document.getElementById('card-number').value = data.cardNumber || '';
+            document.getElementById('card-expiry').value = data.cardExpiry || '';
+            document.getElementById('card-cvv').value = data.cardCvv || '';
+            document.getElementById('opt-in-offers').checked = data.optInOffers || false;
+            document.getElementById('opt-in-alerts').checked = data.optInAlerts || false;
+            document.getElementById('opt-in-recommendations').checked = data.optInRecommendations || false;
+            document.getElementById('product-preference').value = data.productPreference || '';
+            document.getElementById('delivery-notes').value = data.deliveryNotes || '';
+            document.getElementById('profile-notes').value = data.profileNotes || '';
+        }
+
+        const profileError = document.getElementById('profile-error');
+
+        const accountData = accountSetupData || signupData;
+        if (!currentUser && !accountData) {
+            window.location.href = 'index.html';
+        }
+
+        if (!accountData) {
+            summary.innerHTML = '<p>We could not find your signup info. <a href="signup.html" style="color:#fff;text-decoration:underline;">Return to sign up</a>.</p>';
+            form.style.display = 'none';
+        } else {
+            summary.innerHTML = `
+                <h2>Your sign-up details</h2>
+                <p><strong>Full name:</strong> ${accountData.fullname || ''}</p>
+                <p><strong>Email:</strong> ${accountData.email || ''}</p>
+                <p><strong>Phone:</strong> ${accountData.phone || ''}</p>
+            `;
+            populateAccountForm(accountData);
+        }
+
+        function showProfilePreview(dataUrl) {
+            if (!dataUrl) {
+                profilePreview.innerHTML = '';
+                return;
+            }
+            profilePreview.innerHTML = `<div>Profile image loaded. <span style="font-weight:700;">Preview:</span><br><img src="${dataUrl}" alt="Profile preview" style="max-width:120px; border-radius:16px; margin-top:12px; border:1px solid rgba(255,255,255,0.2);"></div>`;
+        }
+
+        function setProfileError(message) {
+            if (!message) {
+                profileError.style.display = 'none';
+                profileError.textContent = '';
+                return;
+            }
+            profileError.style.display = 'block';
+            profileError.textContent = message;
+        }
+
+        function updateCropPreview() {
+            if (!cropImage.src) return;
+            const zoom = parseFloat(cropZoom.value);
+            cropImage.style.transform = `scale(${zoom})`;
+        }
+
+        function openCropper(dataUrl) {
+            currentCropSource = dataUrl;
+            cropImage.src = dataUrl;
+            cropZoom.value = '1';
+            cropSection.style.display = 'block';
+            updateCropPreview();
+        }
+
+        function closeCropper() {
+            cropSection.style.display = 'none';
+            cropImage.removeAttribute('src');
+            currentCropSource = '';
+            cropZoom.value = '1';
+        }
+
+        function cropToSquare() {
+            if (!currentCropSource) return;
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const size = 400;
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, size, size);
+
+                const zoom = parseFloat(cropZoom.value);
+                const cropWidth = img.naturalWidth / zoom;
+                const cropHeight = img.naturalHeight / zoom;
+                const offsetX = (img.naturalWidth - cropWidth) / 2;
+                const offsetY = (img.naturalHeight - cropHeight) / 2;
+
+                ctx.drawImage(img, offsetX, offsetY, cropWidth, cropHeight, 0, 0, size, size);
+                const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                localStorage.setItem('profilePictureData', croppedDataUrl);
+                showProfilePreview(croppedDataUrl);
+                closeCropper();
+            };
+            img.src = currentCropSource;
+        }
+
+        profileInput.addEventListener('change', function() {
+            const file = profileInput.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                setProfileError('Profile image must be less than 2MB. Please choose a smaller file.');
+                profileInput.value = '';
+                profilePreview.innerHTML = '';
+                localStorage.removeItem('profilePictureData');
+                closeCropper();
+                return;
+            }
+            setProfileError('');
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const dataUrl = event.target.result;
+                openCropper(dataUrl);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        cropZoom.addEventListener('input', updateCropPreview);
+        applyCropButton.addEventListener('click', cropToSquare);
+        cancelCropButton.addEventListener('click', function() {
+            closeCropper();
+            profileInput.value = '';
+        });
+
+        const savedProfileImage = localStorage.getItem('profilePictureData');
+        if (savedProfileImage) {
+            showProfilePreview(savedProfileImage);
+        }
+
+        if (!signupData) {
+            summary.innerHTML = '<p>We could not find your signup info. <a href="signup.html" style="color:#fff;text-decoration:underline;">Return to sign up</a>.</p>';
+            form.style.display = 'none';
+        } else {
+            summary.innerHTML = `
+                <h2>Your sign-up details</h2>
+                <p><strong>Full name:</strong> ${signupData.fullname}</p>
+                <p><strong>Email:</strong> ${signupData.email}</p>
+                <p><strong>Phone:</strong> ${signupData.phone}</p>
+            `;
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const accountSetup = {
+                ...signupData,
+                nickname: document.getElementById('nickname').value,
+                birthday: document.getElementById('birthday').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                postcode: document.getElementById('postcode').value,
+                country: document.getElementById('country').value,
+                profilePicture: localStorage.getItem('profilePictureData') || '',
+                cardholderName: document.getElementById('cardholder-name').value,
+                cardNumber: document.getElementById('card-number').value,
+                cardExpiry: document.getElementById('card-expiry').value,
+                cardCvv: document.getElementById('card-cvv').value,
+                optInOffers: document.getElementById('opt-in-offers').checked,
+                optInAlerts: document.getElementById('opt-in-alerts').checked,
+                optInRecommendations: document.getElementById('opt-in-recommendations').checked,
+                productPreference: document.getElementById('product-preference').value,
+                deliveryNotes: document.getElementById('delivery-notes').value,
+                profileNotes: document.getElementById('profile-notes').value
+            };
+            localStorage.setItem('accountSetupData', JSON.stringify(accountSetup));
+            window.location.href = 'landing.html';
+        });
+    </script>
+</body>
+</html>
